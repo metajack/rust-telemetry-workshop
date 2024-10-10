@@ -41,7 +41,7 @@ pub fn init_tracer() -> Tracer {
         .with_exporter(
             opentelemetry_otlp::new_exporter()
                 .tonic()
-                .with_endpoint("https://api.honeycomb.io/api/traces")
+                // .with_endpoint("https://api.honeycomb.io")
                 .with_timeout(std::time::Duration::from_secs(5))
                 .with_metadata(map),
         )

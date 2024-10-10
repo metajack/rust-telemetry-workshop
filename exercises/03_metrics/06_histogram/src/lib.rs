@@ -5,6 +5,8 @@ fn do_something(t: Duration) {
     thread::sleep(t);
     // TODO: register how long it takes to run this function using an `invocation_duration_seconds`
     //   histogram.
+    metrics::describe_histogram!("invocation_duration_seconds", metrics::Unit::Seconds, "Invocation duration");
+    metrics::histogram!("invocation_duration_seconds").record(t);
 }
 
 #[cfg(test)]

@@ -18,7 +18,19 @@ pub use subscriber::init_test_subscriber;
 pub fn get_total(order_numbers: &[u64]) -> Result<u64, anyhow::Error> {
     // Tip: use `tracing::info_span!` to create a new span.
     // You'll have to learn about the *RAII guard* pattern!
-    todo!()
+    let mut sum = 0;
+    let total_span = tracing::info_span!("process total price");
+    {
+        let _total_guard = total_span.enter();
+        for &on in order_numbers {
+            let retrieve_span = tracing::info_span!("retrieve order");
+            let _retrieve_guard = retrieve_span.enter();
+
+            sum += get_order_details(on)?.price;
+        }
+    }
+
+    Ok(sum)
 }
 
 pub struct OrderDetails {

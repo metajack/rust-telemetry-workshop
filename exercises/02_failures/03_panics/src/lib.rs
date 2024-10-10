@@ -2,11 +2,16 @@
 //!
 //! Install a custom panic hook that will emit a `tracing` event whenever a panic is triggered.
 
+use std::panic;
+
 mod subscriber;
 
 fn panicky_function() {
+    panic::set_hook(Box::new(tracing_panic::panic_hook));
     panic!("I'm panicking! Log me!");
 }
+
+
 
 #[cfg(test)]
 mod tests {

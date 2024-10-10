@@ -5,8 +5,11 @@ pub fn do_something(i: u64) {
 
 #[cfg(test)]
 mod tests {
-    use crate::do_something;
     use std::net::{Ipv4Addr, SocketAddr};
+
+    use metrics_exporter_prometheus::PrometheusBuilder;
+
+    use crate::do_something;
 
     /// # Exercise
     ///
@@ -15,7 +18,9 @@ mod tests {
         // Needed for TLS to work
         rustls::crypto::aws_lc_rs::default_provider().install_default().unwrap();
 
-        todo!()
+        PrometheusBuilder::new()
+            .with_http_listener(socket_addr)
+            .install().unwrap();
     }
 
     #[test]

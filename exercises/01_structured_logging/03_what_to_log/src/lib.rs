@@ -2,6 +2,8 @@ mod logger;
 
 pub use logger::TestLogger;
 
+use std::time::Instant;
+
 /// Given a list of order numbers, compute the total price.
 ///
 /// # Exercise
@@ -14,7 +16,29 @@ pub use logger::TestLogger;
 ///
 /// Refer to the test files for the expected output format.
 pub fn get_total(order_numbers: &[u64]) -> Result<u64, anyhow::Error> {
-    todo!()
+    let mut sum = 0;
+    log::info!("START - process total price");
+    let total_price_time = Instant::now();
+    for on in order_numbers {
+        log::info!("START - retrieve order");
+        let retrieve_order_time = Instant::now();
+        let order = get_order_details(*on);
+        let order = match order {
+            Ok(order) => {
+                log::info!("END - retrieve order - SUCCESS - {}ms", retrieve_order_time.elapsed().as_millis());
+                order
+            },
+            Err(e) => {
+                log::info!("END - retrieve order - ERROR - {}ms", retrieve_order_time.elapsed().as_millis());
+                log::info!("END - process total price - ERROR - {}ms", total_price_time.elapsed().as_millis());
+                return Err(e);
+            },
+        };
+        sum += order.price;
+    }
+    log::info!("END - process total price - SUCCESS - {}ms", total_price_time.elapsed().as_millis());
+
+    Ok(sum)
 }
 
 pub struct OrderDetails {
